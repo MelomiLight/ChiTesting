@@ -1,16 +1,22 @@
 package main
 
 import (
-	"chicha/internal/server"
 	"fmt"
+	"net/http"
 )
 
 func main() {
-
-	server := server.NewServer()
-
-	err := server.ListenAndServe()
-	if err != nil {
-		panic(fmt.Sprintf("cannot start server: %s", err))
+	server := &http.Server{
+		Addr: ":3000",
+		Handler: http.HandlerFunc(basicHandler),
 	}
+
+	err:=server.ListenAndServe()
+	if err!=nil {
+		fmt.Println("Failed to listen to server",err)
+	}
+}
+
+func basicHandler(w http.ResponseWriter, r *http.Request){
+	w.Write([]byte("Hello, world!"))
 }
