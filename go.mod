@@ -2,6 +2,4 @@ module chicha
 
 go 1.21.0
 
-require (
-	
-)
+require github.com/go-chi/chi/v5 v5.0.11
