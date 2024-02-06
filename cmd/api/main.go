@@ -1,29 +1,22 @@
 package main
 
 import (
+	"chicha/application"
+	"context"
 	"fmt"
-	"net/http"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"os"
+	"os/signal"
 )
 
 func main() {
-	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-	router.Get("/hello", basicHandler)
+	app := application.New(application.LoadConfig()) //First of all initialize application
 
-	server := &http.Server{
-		Addr:    ":3000",
-		Handler: router,
-	}
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
 
-	err := server.ListenAndServe()
+	err := app.Start(ctx) //start application
 	if err != nil {
-		fmt.Println("Failed to listen to server", err)
+		fmt.Println("failed to start application:", err)
 	}
-}
-
-func basicHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, world!"))
+	
 }
